@@ -12,5 +12,5 @@ if (position > square) {
     position -= (square - (square % 2));
 }
 
-//console.log(square, distance, position);
+console.log(square, distance, position);
 console.log(distance + Math.abs(Math.ceil((square) / 2) - position))
