@@ -6,9 +6,8 @@ while (perms.indexOf(bank.join()) == -1) {
     move(bank);
 }
 
-console.log(perms.length);
-
-
+console.log("6A = " + perms.length);
+console.log("6B = " + (perms.length - perms.indexOf(bank.join())));
 
 function move(arr) {
     let max = arr.reduce((a, b) => Math.max(a, b))
