@@ -4,6 +4,7 @@ var input = [];
 var level = 0;
 var score = 0;
 var garbage = false;
+var garbCount = 0;
 
 input = fs.readFileSync('./input9.txt')
     .toString()
@@ -14,8 +15,11 @@ input.forEach((e, idx) => {
         if(e == '>'){
             garbage = false;
         }
-        if(e == '!'){
+        else if(e == '!'){
             input[idx+1] = ' ';
+        }
+        else if(e != ' '){
+            garbCount++;
         }
     }else{
         if(e == '{'){
@@ -32,4 +36,5 @@ input.forEach((e, idx) => {
 })
 
 
-console.log(score);
+console.log(`9A = ${score}`);
+console.log(`9B = ${garbCount}`);
