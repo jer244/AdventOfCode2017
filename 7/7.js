@@ -44,7 +44,7 @@ var cont = true;
 while(cont){
     let tmp = itr.next().value;
     if(tmp.parents.length == 0){
-        console.log(tmp.node);
+        console.log(`7A = ${tmp.node}`);
         cont = false;
     }
 }
