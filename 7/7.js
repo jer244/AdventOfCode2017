@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 var input = [];
-var myMap = new Map();
+var programs = {};
 
 //SPLIT INPUT INTO ARRAY OF STRING BY ROWS
 input = fs.readFileSync('./input7.txt')
@@ -19,12 +19,12 @@ for (v of input) {
 
     //GET RID OF COMMAS 
     children.forEach((e, idx) => {
-        if(e[e.length-1] == ','){
+        if (e[e.length - 1] == ',') {
             children[idx] = e.slice(0, -1);
         }
     })
 
-    //CREATE MAP
+    //CREATE OBJECT AND ADD TO PROGRAMS OBJ
     let obj = {
         node,
         weight: Number(weightStr.slice(1, -1)),
@@ -32,41 +32,66 @@ for (v of input) {
         parents: [],
         nodeWeight: 0
     }
-    myMap.set(node, obj);
+    programs[node] = obj;
+}
+//MAP PARENT VALUES
+for (v in programs) {
+    programs[v].children.forEach((e) => {
+        programs[e].parents.push(v);
+    })
 }
 
-//MAP PARENT VALUES
-myMap.forEach((val, key, map) => {
-    val.children.forEach((e) => {
-        let tmp = myMap.get(e);
-        tmp.parents.push(val.node);
-    })
-})
-
-//CREATE ITERATOR
-var itr = myMap.values();
-
-var cont = true;
 var root = '';
 
 //FIND AND LOG NODE THAT DOESN'T HAVE A PARENT
-while(cont){
-    let tmp = itr.next().value;
-    if(tmp.parents.length == 0){
-        console.log(`7A = ${tmp.node}`);
-        root = tmp.node;
-        cont = false;
+for (v in programs) {
+    if (programs[v].parents.length == 0) {
+        root = v;
+        console.log(`7A = ${root}`);
     }
 }
 
 //CALCULATE nodeWeights
-function nodeWeight(node){
-    return node.weight + node.children.reduce((acc, curr) => acc + nodeWeight(curr), 0);
+function findNodeWeight(node) {
+    if (programs[node].children.length == 0) {
+        programs[node].nodeWeight = programs[node].weight;
+        return programs[node].weight;
+    } else {
+        programs[node].nodeWeight = programs[node].weight + programs[node].children.reduce((acc, curr) => acc + findNodeWeight(curr), 0);
+        return programs[node].nodeWeight;
+    }
 }
 
-nodeWeight(myMap.get(root));
+findNodeWeight(root);
 
-console.log(myMap);
+//FIND AND LOG UNBALANCED NODE
+function findUnbal(node) {
+    if (programs[node].children.length == 0) {
+        return false;
+    }
+    for (let c of programs[node].children) {
+        let found = findUnbal(c);
+        if (found) {
+            return found;
+        }
+    }
+    let tempWeight = programs[programs[node].children[0]].nodeWeight;
+    let idx = programs[node].children.findIndex((element) => {
+        return programs[element].nodeWeight != tempWeight;
+    })
+    if (idx > 0) {
+        console.log(`unbal node = ${programs[node].weight}`)
+        programs[node].children.forEach(e => {
+            console.log(`node - ${programs[e].node} weight = ${programs[e].weight} nodeWeight - ${programs[e].nodeWeight}`);
+        })
+        return true;
+    } else {
+        return false;
+    }
+}
+
+findUnbal(root);
+
 
 
 
