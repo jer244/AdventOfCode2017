@@ -1,4 +1,4 @@
-//refer to following for hex grid info - https://www.redblobgames.com/grids/hexagons/
+//credit to the following post for hex grid info - https://www.redblobgames.com/grids/hexagons/
 
 const fs = require('fs');
 
